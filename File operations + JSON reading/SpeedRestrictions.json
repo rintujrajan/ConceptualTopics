@@ -1,0 +1,34 @@
+{
+  "SpeedRestrictions": [
+    {
+      "StartDistance": 0,
+      "EndDistance": 5,
+      "SpeedLimt": 30
+    },
+    {
+      "StartDistance": 6,
+      "EndDistance": 10,
+      "SpeedLimt": 60
+    },
+    {
+      "StartDistance": 11,
+      "EndDistance": 20,
+      "SpeedLimt": 90
+    },
+    {
+      "StartDistance": 21,
+      "EndDistance": 40,
+      "SpeedLimt": 120
+    },
+    {
+      "StartDistance": 41,
+      "EndDistance": 60,
+      "SpeedLimt": 140
+    },
+    {
+      "StartDistance": 61,
+      "EndDistance": 80,
+      "SpeedLimt": 140
+    }
+  ]
+}
