@@ -87,9 +87,11 @@ class MoveSemantics
         {
             strSize = moveSemantics.strSize;
             
+            delete strPtr;  // since there is a chance that the current object being copied into would have already been assigned we delete to avoid memory leak
             strPtr = new char[strSize+1];
             memcpy(strPtr, moveSemantics.strPtr, strSize+1);
 
+            delete intPtr;  // since there is a chance that the current object being copied into would have already been assigned we delete to avoid memory leak
             intPtr = new int();
             *intPtr = *(moveSemantics.intPtr);
 
@@ -138,10 +140,10 @@ class MoveSemantics
         {
             strSize = moveSemantics.strSize;
         
-            delete strPtr;
+            delete strPtr;  // since there is a chance that the current object being copied into would have already been assigned we delete to avoid memory leak
             strPtr  = moveSemantics.strPtr;
 
-            delete intPtr;
+            delete intPtr;  // since there is a chance that the current object being copied into would have already been assigned we delete to avoid memory leak
             intPtr = moveSemantics.intPtr;
 
             objectName = moveSemantics.objectName+ "Moved"+ to_string(moveCounter++);
