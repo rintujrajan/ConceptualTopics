@@ -170,6 +170,8 @@ class MoveSemantics
         delete strPtr;
         delete intPtr;
     }
+
+    // getter functions for member variables
     string getStringValue()
     {     
         string str = "";   
