@@ -140,7 +140,7 @@ class MoveSemantics
         {
             strSize = moveSemantics.strSize;
         
-            delete strPtr;  // since there is a chance that the current object being copied into would have already been assigned we delete to avoid memory leak
+            delete [] strPtr;  // since there is a chance that the current object being copied into would have already been assigned we delete to avoid memory leak
             strPtr  = moveSemantics.strPtr;
 
             delete intPtr;  // since there is a chance that the current object being copied into would have already been assigned we delete to avoid memory leak
@@ -167,7 +167,7 @@ class MoveSemantics
         cout<<"Destructor called for : "<< objectName <<endl;
 
         // Delete all pointer objects which have been assigned memory using new keyword
-        delete strPtr;
+        delete [] strPtr;
         delete intPtr;
     }
 
