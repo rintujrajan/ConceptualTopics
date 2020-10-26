@@ -1,8 +1,10 @@
 #include <iostream>
-#include <string>
+#include <cstring> //for strlen
 #include <iomanip> // used for setting custom white space
 
-using namespace std;
+#include <string> //used only for support purpose of object name handling
+
+// using namespace std;
 
 int copyCounter = 1;
 int moveCounter = 1;
@@ -25,24 +27,32 @@ int moveCounter = 1;
     As per the rule of Big Five If we create any one of the copy constr, copy assignment, move constr, move assignment, destructor
     then all the five special member functions have to be created
 */
+void memcpy(const void* dest, const void* src, size_t n)
+{
+    char* csrc = (char*)src;
+    char* cdest = (char*)dest;
+    for(int i = 0; i < n; ++i)
+    {
+        cdest[i] = csrc[i];
+    }
+}
 class MoveSemantics
 {
-    int strSize;
-    char* strPtr;
+    const char* strPtr;
     int* intPtr; 
-    string objectName;
+    std::string objectName;
 
     public:
-    MoveSemantics():strSize(0), strPtr(nullptr),intPtr(nullptr),objectName("")
+    MoveSemantics():strPtr(nullptr),intPtr(nullptr),objectName("")
     {
-        cout<<"Default constructor\n"<<endl;
+        std::cout<<"Default constructor\n"<<std::endl;
     }
 
     MoveSemantics(const char* str,int intVal)
     {
-        cout<<"Parameterized constructor\t"<<str <<"\t" <<intVal<<  "\n"<<endl;
+        std::cout<<"Parameterized constructor\t"<<str <<"\t" <<intVal<<  "\n"<<std::endl;
 
-        strSize = strlen(str);
+        int strSize = strlen(str);
 
         strPtr = new char[strSize+1];
         memcpy(strPtr, str, strSize+1);
@@ -60,9 +70,9 @@ class MoveSemantics
     */
     MoveSemantics(const MoveSemantics &moveSemantics)
     {
-        cout<<"Copy constructor"<<endl;
+        std::cout<<"Copy constructor"<<std::endl;
 
-        strSize = moveSemantics.strSize;
+        int strSize = strlen(moveSemantics.strPtr);
         
         strPtr = new char[strSize+1];
         memcpy(strPtr, moveSemantics.strPtr, strSize+1);
@@ -70,24 +80,24 @@ class MoveSemantics
         intPtr = new int();
         *intPtr = *(moveSemantics.intPtr);
 
-        objectName = moveSemantics.objectName+ "Copy"+ to_string(copyCounter++);
+        objectName = moveSemantics.objectName+ "Copy"+ std::to_string(copyCounter++);
 
-        cout<<"Copied data of strPtr from addr "<< &moveSemantics.strPtr << " of ("<< moveSemantics.objectName << ") to "<< &strPtr << " of ("<< objectName << ")" <<endl;
+        std::cout<<"Copied data of strPtr from addr "<< &moveSemantics.strPtr << " of ("<< moveSemantics.objectName << ") to "<< &strPtr << " of ("<< objectName << ")" <<std::endl;
     }
 
     /*
-        Copy Assigment
+        Copy Assignment
         Called when an already created object is being used to copy from another existing object e.g. appleCopy2 = apple; 
         The parameter takes const refernce so that it can take both lValue as an rValue(temporary values)
     */
     MoveSemantics& operator=(const MoveSemantics &moveSemantics)
     {
-        cout<<"Copy assignment"<<endl;
+        std::cout<<"Copy assignment"<<std::endl;
         if(this != &moveSemantics)
         {
-            strSize = moveSemantics.strSize;
+            int strSize = strlen(moveSemantics.strPtr);
             
-            delete strPtr;  // since there is a chance that the current object being copied into would have already been assigned we delete to avoid memory leak
+            delete [] strPtr;  // since there is a chance that the current object being copied into would have already been assigned we delete to avoid memory leak
             strPtr = new char[strSize+1];
             memcpy(strPtr, moveSemantics.strPtr, strSize+1);
 
@@ -95,13 +105,13 @@ class MoveSemantics
             intPtr = new int();
             *intPtr = *(moveSemantics.intPtr);
 
-            objectName = moveSemantics.objectName+ "Copy"+ to_string(copyCounter++);
+            objectName = moveSemantics.objectName+ "Copy"+ std::to_string(copyCounter++);
 
-            cout<<"Copied data of strPtr from addr "<< &moveSemantics.strPtr << " of ("<< moveSemantics.objectName << ") to "<< &strPtr << " of ("<< objectName << ")" <<endl;
+            std::cout<<"Copied data of strPtr from addr "<< &moveSemantics.strPtr << " of ("<< moveSemantics.objectName << ") to "<< &strPtr << " of ("<< objectName << ")" <<std::endl;
         }
         else
         {
-            cout<<"Copy called on same object. Same object returned!\n"<<endl;
+            std::cout<<"Copy called on same object. Same object returned!\n"<<std::endl;
         }
         return *this;
     }
@@ -109,36 +119,35 @@ class MoveSemantics
     /*
         Move Constructor
         Called when an object is created and moved(stealing resources) in the same line of code e.g. MoveSemantics mangoCopy1 = move(mango);
-        The parameter takes rValue refernce. No constness is needed since it is a temporary refrence in the first place
+        The parameter takes rValue refernce. No constness is needed since it is a temporary refernce in the first place
     */
     MoveSemantics(MoveSemantics &&moveSemantics)
     {
-        cout<<"Move constructor"<<endl;
-        strSize = moveSemantics.strSize;
+        std::cout<<"Move constructor"<<std::endl;
+        int strSize = strlen(moveSemantics.strPtr);
         
         strPtr  = moveSemantics.strPtr;
 
         intPtr = moveSemantics.intPtr;
 
-        objectName = moveSemantics.objectName+ "Moved"+ to_string(moveCounter++);
+        objectName = moveSemantics.objectName+ "Moved"+ std::to_string(moveCounter++);
 
-        moveSemantics.strSize = 0;
         moveSemantics.strPtr = nullptr;
         moveSemantics.intPtr = nullptr;
         //we will not reset the object name since we would like to keep it to identify the object name
     }
 
     /*
-        Move Assigment
+        Move Assignment
         Called when an already created object is being used to move data(stealing resources) from another existing object e.g. mangoCopy2 = move(mangoCopy1); 
         The parameter takes const refernce so that it can take both lValue as an rValue(temporary values)
     */
     MoveSemantics& operator=(MoveSemantics&& moveSemantics)
     {
-        cout<<"Move assignemnt"<<endl;
+        std::cout<<"Move assignment"<<std::endl;
         if(this != &moveSemantics)
         {
-            strSize = moveSemantics.strSize;
+            int strSize = strlen(moveSemantics.strPtr);
         
             delete [] strPtr;  // since there is a chance that the current object being copied into would have already been assigned we delete to avoid memory leak
             strPtr  = moveSemantics.strPtr;
@@ -146,16 +155,15 @@ class MoveSemantics
             delete intPtr;  // since there is a chance that the current object being copied into would have already been assigned we delete to avoid memory leak
             intPtr = moveSemantics.intPtr;
 
-            objectName = moveSemantics.objectName+ "Moved"+ to_string(moveCounter++);
+            objectName = moveSemantics.objectName+ "Moved"+ std::to_string(moveCounter++);
 
-            moveSemantics.strSize = 0;
             moveSemantics.strPtr = nullptr;
             moveSemantics.intPtr = nullptr;
             //we will not reset the object name since we would like to keep it to identify the object name
         }
         else
         {
-            cout<<"Move called on same object. Same object returned!\n"<<endl;
+            std::cout<<"Move called on same object. Same object returned!\n"<<std::endl;
         }
         
         return *this;
@@ -164,82 +172,81 @@ class MoveSemantics
     // Destructor
     ~MoveSemantics()
     {
-        cout<<"Destructor called for : "<< objectName <<endl;
+        std::cout<<"Destructor called for : "<< objectName <<std::endl;
 
         // Delete all pointer objects which have been assigned memory using new keyword
         delete [] strPtr;
         delete intPtr;
     }
-
-    // getter functions for member variables
-    string getStringValue()
-    {     
-        string str = "";   
-        for (int i = 0; i < strSize; ++i)
-        {
-            str+=strPtr[i];
-        }
-        return str;
-    }
-    string getObjectName()
-    {
-        return objectName;
-    }
-    int getintPtrValue()
-    {
-        if(intPtr != nullptr)
-        {
-            return *intPtr;
-        }
-        return 0;
-    }
-
+    friend std::ostream& operator<<(std::ostream& out, const MoveSemantics& ms);
 };
+std::ostream& operator<<(std::ostream& out, const MoveSemantics& ms)
+{
+    out << std::setw(18) << ms.objectName;
+    out << "strptr: ";
+    if(ms.strPtr!=nullptr)
+    {
+        int strLength = strlen(ms.strPtr);
+        for (int i = 0; i < strLength; i++)
+        {
+            out << ms.strPtr[i];
+        }
+    }
+    else
+    {
+        out << "NULL";
+    }
+    
+    out<<"\tintptr: ";
+    if(ms.intPtr != nullptr)
+    {
+        out<< *ms.intPtr;
+    }
+    else
+    {
+        out << "NULL";
+    }
+    out << "\n";
+    return out;
+}
 void myFunc()
 {
-    cout << left;
+    std::cout << std::left;
 
     MoveSemantics apple("apple", 1);       // Parameterized constructor will be called 
     MoveSemantics appleCopy1 = apple;      // Copy constructor will be called since a new object is being copied
-    cout<<"Checking the copy done.."<<endl;
-    cout<<setw(10) <<apple.getObjectName()<<".strPtrVal :"<< apple.getStringValue()<<"\t"
-        << apple.getObjectName() <<".intPtrVal :"<< apple.getintPtrValue()<<endl;
-    cout<< appleCopy1.getObjectName()<<".strPtrVal :"<< appleCopy1.getStringValue()<<"\t"
-        << appleCopy1.getObjectName() <<".intPtrVal :"<< appleCopy1.getintPtrValue()<<endl<<endl;
+    std::cout<<"Checking the copy done..\n";
+    std::cout<< apple;
+    std::cout<< appleCopy1;
     
     MoveSemantics appleCopy2;              // Default constructor called to create object
     appleCopy2 = apple;                    // Copy assignment will be called since the object appleCopy2 is already created and will be only copied                                                           
-    cout<<"Checking the copy done.."<<endl;
-    cout<< appleCopy2.getObjectName()<<".strPtrVal :"<< appleCopy2.getStringValue()<<"\t"
-        << appleCopy2.getObjectName() <<".intPtrVal :"<< appleCopy2.getintPtrValue()<<endl<<endl;
+    std::cout<<"Checking the copy done..\n";
+    std::cout<< appleCopy2;
 
-    appleCopy2 = appleCopy2;               // Copy assigment is called but the same object shall be returned
+    appleCopy2 = appleCopy2;               // Copy assignment is called but the same object shall be returned
 
     MoveSemantics mango("mango", 2);       // Parameterized constructor will be called 
-    MoveSemantics mangoCopy1 = move(mango);// Move constructor will be called since a new object is being created(mangocopy1) by moving existing object(mango)
-    cout<<"Checking the move done.."<<endl;
-    cout<<setw(11) << mango.getObjectName()<<".strPtrVal :"<<setw(5)<< mango.getStringValue()<<"\t"
-        << mango.getObjectName() <<".intPtrVal :"<< mango.getintPtrValue()<<endl;
-    cout<< mangoCopy1.getObjectName()<<".strPtrVal :"<< mangoCopy1.getStringValue()<<"\t"
-        << mangoCopy1.getObjectName() <<".intPtrVal :"<< mangoCopy1.getintPtrValue()<<endl<<endl;
+    MoveSemantics mangoCopy1 = std::move(mango); // Move constructor will be called since a new object is being created(mangocopy1) by moving existing object(mango)
+    std::cout<<"Checking the move done..\n";
+    std::cout<< mango;
+    std::cout<< mangoCopy1;
 
     mangoCopy1 = mangoCopy1;                
 
-    MoveSemantics mangoCopy2;               // Default constructor called to create object
-    mangoCopy2 = move(mangoCopy1);          // Move assigment will be called since the object(mangocopy2) is already created and data will be moved from existing object(mangoCopy1)
-    cout<<"Checking the move done.."<<endl;
-    cout<<setw(17)<< mangoCopy1.getObjectName()<<".strPtrVal :"<<setw(5)<< mangoCopy1.getStringValue()<<"\t"
-        << mangoCopy1.getObjectName() <<".intPtrVal :"<< mangoCopy1.getintPtrValue()<<endl;
-    cout<< mangoCopy2.getObjectName()<<".strPtrVal :"<< mangoCopy2.getStringValue()<<"\t"
-        << mangoCopy2.getObjectName() <<".intPtrVal :"<< mangoCopy2.getintPtrValue()<<endl<<endl;
+    MoveSemantics mangoCopy2;             // Default constructor called to create object
+    mangoCopy2 = std::move(mangoCopy1);   // Move assignment will be called since the object(mangocopy2) is already created and data will be moved from existing object(mangoCopy1)
+    std::cout<<"Checking the move done..\n";
+    std::cout<< mangoCopy1;
+    std::cout<< mangoCopy2;
 
-    mangoCopy2 = move(mangoCopy2);          // Move assigment is called but the same object shall be returned
+    mangoCopy2 = std::move(mangoCopy2);    // Move assignment is called but the same object shall be returned
 
-    cout<<"\n\nDestructors: "<<endl;        // Destructors are called since the objects would be doing out of scope outside function scope
+    std::cout<<"\n\nDestructors: "<<std::endl;  // Destructors are called since the objects would be doing out of scope outside function scope
 }
 
 int main()
 {
     myFunc();
-    cin.get();
+    std::cin.get();
 }
