@@ -1,5 +1,4 @@
 #include <iostream>
-#include "Folder\A.h"
 
 class Multiply
 {
@@ -55,8 +54,6 @@ int main() {
     int productUsingFunctionPointerAuto = functionPointerAuto(multiplicand,multiplier); 
     std::cout<< "Multiplication product using functionPointerAuto: " << productUsingFunctionPointerAuto<<"\n";
 
-    A a;
-    a.testMethod();
     std::cin.get();
 }
 
