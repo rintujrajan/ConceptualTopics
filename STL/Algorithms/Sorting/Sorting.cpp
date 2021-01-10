@@ -12,7 +12,6 @@ struct Tuple
 };
 void printVector(const vector<Tuple> &tuples)
 {
-    cout << "\n";
     for (const auto &tuple : tuples)
     {
         cout << "\t" << tuple.key << "\t" << tuple.value << endl;
@@ -46,13 +45,13 @@ void Sort(vector<Tuple> tuples)
     */
     std::cout << "##### std::sort #####\n";
 
-    cout << "\n***** Before sort *****";
+    cout << "\n***** Before sort *****\n";
     printVector(tuples);
 
     // sort descending order using predicate - predicates are functors that alsways return bool
     sort(tuples.begin(), tuples.end(), sortTupleDescending);
 
-    cout << "\n***** After sorting descending order *****";
+    cout << "\n***** After sorting descending order *****\n";
     printVector(tuples);
 
     //sort ascending order using Lambda expression
@@ -64,7 +63,7 @@ void Sort(vector<Tuple> tuples)
     auto sortAscendingUsingLambda = [](const Tuple &t1, const Tuple &t2) { return t1.key < t2.key; };
     sort(tuples.begin(), tuples.end(), sortAscendingUsingLambda);
 
-    cout << "\n***** After sorting ascending order *****";
+    cout << "\n***** After sorting ascending order *****\n";
     printVector(tuples);
 }
 //SORT END
@@ -77,7 +76,7 @@ void partialSort(vector<Tuple> tuples)
     */
     std::cout << "\n\n##### std::partial_sort #####\n";
 
-    cout << "\n***** Before sort *****";
+    cout << "\n***** Before sort *****\n";
     printVector(tuples);
 
     int middleRange = 2;
@@ -91,7 +90,7 @@ void partialSort(vector<Tuple> tuples)
     */
     std::partial_sort(tuples.begin(), tuples.begin() + middleRange, tuples.end(),
                       [](const Tuple &l, const Tuple &r) { return l.value < r.value; });
-    cout << "\n***** After sorting ascending order upto element " << middleRange << " *****";
+    cout << "\n***** After sorting ascending order upto element " << middleRange << " *****\n";
     printVector(tuples);
 }
 
@@ -104,7 +103,7 @@ void partialSortCopy(vector<Tuple> tuples)
     */
     std::cout << "\n\n##### std::partial_sort_copy #####\n";
 
-    cout << "\n***** The original container before sort *****";
+    cout << "\n***** The original container before sort *****\n";
     printVector(tuples);
 
     /*
@@ -120,7 +119,7 @@ void partialSortCopy(vector<Tuple> tuples)
     cout << "\n***** The new container after partial sort copy *****";
     printDeQue(tuplesSortedCopy);
 
-    cout << "\n***** The original container after partial sort copy(unchanged) *****";
+    cout << "\n***** The original container after partial sort copy(unchanged) *****\n";
     printVector(tuples);
 }
 
@@ -137,7 +136,7 @@ void nthElement(vector<Tuple> tuples)
     */
     std::cout << "\n\n##### std::nthElement #####\n";
 
-    cout << "\n***** The original container before sort *****";
+    cout << "\n***** The original container before sort *****\n";
     printVector(tuples);
 
     /*
@@ -147,19 +146,78 @@ void nthElement(vector<Tuple> tuples)
     std::nth_element(tuples.begin(), tuples.begin() + nthElementToSort, tuples.end(),
                      [](const Tuple &l, const Tuple &r) { return l.value < r.value; });
 
-    cout << "\n***** After the element no. " << nthElementToSort + 1 << " is in sorted position  *****";
+    cout << "\n***** After the element no. " << nthElementToSort + 1 << " is in sorted position  *****\n";
     printVector(tuples);
+}
+
+void isSorted(vector<Tuple> tuples)
+{
+    /*
+        std::is_sorted
+        Returns true if the range [begin,end) is in sorted order.
+    */
+    std::cout << "##### std::is_sorted #####\n";
+
+    cout << "\n***** Before sort *****\n";
+    printVector(tuples);
+    std::cout << "std::is_sorted:" << std::boolalpha
+              << std::is_sorted(tuples.begin(), tuples.end(), [](const Tuple &t1, const Tuple &t2) { return t1.key < t2.key; });
+
+    // let's sort it
+    auto sortAscendingUsingLambda = [](const Tuple &t1, const Tuple &t2) { return t1.key < t2.key; };
+    sort(tuples.begin(), tuples.end(), sortAscendingUsingLambda);
+
+    cout << "\n\n***** After sorting ascending order *****\n";
+    printVector(tuples);
+    std::cout << "std::is_sorted:" << std::is_sorted(tuples.begin(), tuples.end(), [](const Tuple &t1, const Tuple &t2) { return t1.key < t2.key; });
+}
+
+void isSortedUntil(vector<Tuple> tuples)
+{
+    /*
+        std::is_sorted_until
+        Returns an iterator to the first element in the range [first,last) which does not follow an ascending order.
+    */
+    std::cout << "##### std::is_sorted_until #####\n";
+
+    cout << "\n***** Before sort *****\n";
+    printVector(tuples);
+    std::cout << "std::is_sorted:" << std::boolalpha
+              << std::is_sorted(tuples.begin(), tuples.end(), [](const Tuple &t1, const Tuple &t2) { return t1.key < t2.key; });
+
+    // let's sort first n elements using partial sort in a loop to see how it goes
+    for (int middle = 1; middle < tuples.size(); ++middle)
+    {
+        auto sortAscendingUsingLambda = [](const Tuple &t1, const Tuple &t2) { return t1.key < t2.key; };
+        partial_sort(tuples.begin(), tuples.begin() + middle, tuples.end(), sortAscendingUsingLambda);
+
+        cout << "\n\n***** After sorting first " << middle << " elements in ascending order *****\n";
+        printVector(tuples);
+        // would point to the first element which is not in order irrespective of wether it was part of sorting or not
+        auto it = std::is_sorted_until(tuples.begin(), tuples.end(), [](const Tuple &t1, const Tuple &t2) { return t1.key < t2.key; });
+        if (it != tuples.end())
+        {
+            std::cout << "std::is_sorted_until:" << it->key << it->value << "\n";
+        }
+        else
+        {
+            std::cout << "All data sorted\n";
+        }
+    }
 }
 
 int main()
 {
     /*
-        The sort algorithms are used with containers having random access iterator support
-        STL containers - deque, vector and array or any custom container which would support random access iterator 
+        The  sort algorithms are used with containers having random access iterator support
+        STL containers - deque, vector, string and array or any custom container which would support random access iterator 
+
+        The auxilary support functions to check if a container is sorted are used with containers having forward iterator support
+        All STL containers support forward iterators
     */
     vector<Tuple> tuples;
     auto temp = 'a';
-    for (int i = 1; i <= 5; i++)
+    for (int i = 1; i <= 8; i++)
     {
         tuples.emplace_back(Tuple{i, temp++});
     }
@@ -173,11 +231,16 @@ int main()
                   << "\t2.std::partial_sort\n"
                   << "\t3.std::partial_sort_copy\n"
                   << "\t4.std::nth_element\n"
+                  << "\tAux support functions\n"
+                  << "\t5.std::is_sorted\n"
+                  << "\t6.std::is_sorted_until\n"
                   << "\t0.Exit\n"
                   << "Your choice:";
         std::cin >> input;
+
         if (system("CLS"))
-            system("clear");
+            system("clear"); //to clear screen
+
         switch (input)
         {
         case 0: //Exit
@@ -199,6 +262,12 @@ int main()
             break;
         case 4: //nth_element
             nthElement(tuples);
+            break;
+        case 5: //is_sorted
+            isSorted(tuples);
+            break;
+        case 6: //is_sorted_until
+            isSortedUntil(tuples);
             break;
         }
     }
