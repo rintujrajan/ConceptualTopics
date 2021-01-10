@@ -1,0 +1,36 @@
+*** Support of iterators by containers ***
+There are five main types of iterators provided under stl - Forward iterators, Random-access iterators, Input iterators, Output iterator, Bidirectional iterator .
+# Forward Iterator 		    => Iterator is increment-able(it++)
+# Bidirectional Iterator 	=> Iterator is increment-able(it++) & decrement-able(it--)
+# Random-access iterators   => Iterator is increment-able(it++),  decrement-able(it--) & supports offset dereference operator ([ ]). In addition they support relational operators like <(lt),>(gt)(e.g. it1 <= it2) and also arithmetic operations like + and  -(e.g. it+4).
+
+			Input Iterator				Output Iterator
+				|								|
+				|								|
+				|_______________________________|
+								|
+								|
+								|
+						Forward Iterator 
+								|
+								|
+								|
+					Bi-Directional Iterator
+								|
+								|
+								|
+					 Random-access Iterator			
+
+
+Iterator Category  Ability                          Providers
+-----------------  -------------------------------  ----------------------------
+Input iterator     Reads forward                    istream
+Output iterator    Writes forward                   ostream, inserter
+Forward iterator   Reads/writes forward             forward_list,
+                                                      unordered_[multi]set,
+                                                      unordered_[multi]map
+Bidirectional it.  Reads/writes forward/backward    list, [multi]set, [multi]map
+Random access it.  Reads/writes with random access  vector, deque, string, array 					 
+
+
+http://www.cplusplus.com/reference/iterator/ - check the chart
