@@ -3,19 +3,21 @@
 class Multiply
 {
     int multiplicand;
-    public:
+
+public:
     Multiply()
     {
-        std::cout<<"Call for default constructor"<<"\n";
+        std::cout << "Call for default constructor"
+                  << "\n";
     }
-    Multiply(int param):multiplicand{param}
+    Multiply(int param) : multiplicand{param}
     {
-        std::cout<<"Call for constructor with 1 parameter.multiplicand:"<< param<<"\n";
+        std::cout << "Call for constructor with 1 parameter.multiplicand:" << param << "\n";
     }
     int operator()(int multiplier)
     {
-        std::cout<<"Functor called with multiplier as "<< multiplier <<"\n";
-        return multiplicand*multiplier;
+        std::cout << "Functor called with multiplier as " << multiplier << "\n";
+        return multiplicand * multiplier;
     }
 };
 
@@ -26,33 +28,34 @@ int add10(int num)
 
 int multiplyFunc(int multiplicand, int multiplier)
 {
-    return multiplicand*multiplier;
+    return multiplicand * multiplier;
 }
 
-int main() {
+int main()
+{
     int multiplicand = 2;
     int multiplier = 3;
-
+    Multiply mul = Multiply(multiplicand);
     Multiply multiply(multiplicand);
     int productUsingFunctor = multiply(multiplier);
-    std::cout<< "Multiplication product using functor: " << productUsingFunctor <<"\n";
+    std::cout << "Multiplication product using functor: " << productUsingFunctor << "\n";
 
-    auto lambdaFunc = [&multiplicand](int lMultiplier)->int { return multiplicand * lMultiplier;};
+    auto lambdaFunc = [&multiplicand](int lMultiplier) -> int { return multiplicand * lMultiplier; };
     int productUsingLambda = lambdaFunc(multiplier);
-    std::cout<< "Multiplication product using lambda expression: " << productUsingLambda<<"\n";
+    std::cout << "Multiplication product using lambda expression: " << productUsingLambda << "\n";
 
     int (*fpAdd10)(int);
     fpAdd10 = add10;
-    std::cout<<fpAdd10(20)<<"\n";
+    std::cout << fpAdd10(20) << "\n";
 
-    int (*functionPointer)(int,int);
+    int (*functionPointer)(int, int);
     functionPointer = multiplyFunc;
-    int productUsingFunctionPointer = functionPointer(multiplicand,multiplier); 
-    std::cout<< "Multiplication product using functionPointer: " << productUsingFunctionPointer<<"\n";
+    int productUsingFunctionPointer = functionPointer(multiplicand, multiplier);
+    std::cout << "Multiplication product using functionPointer: " << productUsingFunctionPointer << "\n";
 
     auto functionPointerAuto = multiplyFunc;
-    int productUsingFunctionPointerAuto = functionPointerAuto(multiplicand,multiplier); 
-    std::cout<< "Multiplication product using functionPointerAuto: " << productUsingFunctionPointerAuto<<"\n";
+    int productUsingFunctionPointerAuto = functionPointerAuto(multiplicand, multiplier);
+    std::cout << "Multiplication product using functionPointerAuto: " << productUsingFunctionPointerAuto << "\n";
 
     std::cin.get();
 }
