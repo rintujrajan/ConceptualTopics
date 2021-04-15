@@ -9,14 +9,16 @@ class BankAccount
 {
 	int accountMoney;
 	mutex lockMutex;
+
 public:
-	BankAccount() :accountMoney(0) {};
+	BankAccount() : accountMoney(0){};
 	void addMoney(int money)
 	{
 		lockMutex.lock();
 		int locMoney = accountMoney + 1;
-		this_thread::sleep_for(chrono::nanoseconds(10000));
+		this_thread::sleep_for(chrono::seconds(2));
 		accountMoney = locMoney;
+		cout << "New Balance : " << accountMoney << endl;
 		lockMutex.unlock();
 	}
 	int getMoneyStatement()
@@ -24,7 +26,8 @@ public:
 		return accountMoney;
 	}
 };
-int main() {
+int main()
+{
 
 	BankAccount myBankAccount;
 	vector<thread> vecThreads;
@@ -37,7 +40,7 @@ int main() {
 		vecThreads[i].join();
 	}
 
-	cout << myBankAccount.getMoneyStatement() << endl;
+	cout << "Final Balance: " << myBankAccount.getMoneyStatement() << endl;
 
-
+	cin.get();
 }

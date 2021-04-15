@@ -9,8 +9,9 @@ class BankAccount
 {
 	int accountMoney;
 	mutex lockMutex;
+
 public:
-	BankAccount() :accountMoney(0) {};
+	BankAccount() : accountMoney(0){};
 	void addMoney(int money)
 	{
 		/*We could use mutex.lock and unlock to avoid race condition as is in MutexLockUnlock.cpp,
@@ -18,7 +19,7 @@ public:
 		In such scenario, one thread will exit without releasing the lock and other threads will remain in waiting.
 		This kind of scenario can happen in case some exception came after locking the mutex.To avoid such scenarios we should use std::lock_guard.*/
 		lock_guard<mutex> lock(lockMutex);
-		int locMoney = accountMoney+1;
+		int locMoney = accountMoney + 1;
 		this_thread::sleep_for(chrono::nanoseconds(10000));
 		accountMoney = locMoney;
 	}
@@ -36,16 +37,17 @@ int getMoneyStatement()
 {
 	return accountMoney;
 }
-int main() {
+int main()
+{
 
 	// checking non class thread
-	thread nonClassThread(addMoney,10);
+	thread nonClassThread(addMoney, 10);
 	nonClassThread.join();
-	cout << getMoneyStatement()<<endl;
+	cout << getMoneyStatement() << endl;
 
 	// checking lambda
 	int money = 1;
-	thread lambdaThread([&]() {money += 1; });
+	thread lambdaThread([&]() { money += 1; });
 	lambdaThread.join();
 	cout << money << endl;
 
@@ -59,7 +61,7 @@ int main() {
 	{
 		vecThreads[i].join();
 	}
-	
+
 	cout << myBankAccount.getMoneyStatement() << endl;
 
 	cin.get();
