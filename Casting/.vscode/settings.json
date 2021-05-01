@@ -47,6 +47,10 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp",
-        "set": "cpp"
+        "unordered_set": "cpp",
+        "iomanip": "cpp",
+        "cstring": "cpp",
+        "set": "cpp",
+        "ios": "cpp"
     }
 }
