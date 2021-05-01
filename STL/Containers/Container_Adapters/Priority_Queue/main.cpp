@@ -7,11 +7,7 @@ struct Slot
 {
     int distance;
     char id;
-};
-
-struct OrderByDistance
-{
-    bool operator()(Slot& left, Slot& right)
+    bool operator()(Slot &left, Slot &right)
     {
         return left.distance > right.distance;
     }
@@ -19,7 +15,7 @@ struct OrderByDistance
 
 int main()
 {
-   /*
+    /*
    *  This is not a true container, but an adaptor.  It holds
    *  another container, and provides a wrapper interface to that
    *  container.  The wrapper is what enforces priority-based sorting
@@ -35,24 +31,24 @@ int main()
    *  priority comparisons.  It defaults to less<value_type> but
    *  can be anything defining a strict weak ordering.
    */
-    priority_queue<Slot,deque<Slot>,OrderByDistance> prioQueue;
-    prioQueue.push(Slot{ 3, 'C'});
-    prioQueue.push(Slot{ 1, 'A'});
-    prioQueue.push(Slot{ 2, 'B'});
+    priority_queue<Slot, deque<Slot>, Slot> prioQueue;
+    prioQueue.push(Slot{3, 'C'});
+    prioQueue.push(Slot{1, 'A'});
+    prioQueue.push(Slot{2, 'B'});
 
-    while(!prioQueue.empty())
+    while (!prioQueue.empty())
     {
-        cout<<prioQueue.top().distance<<" "<<prioQueue.top().id <<"\n";
+        cout << prioQueue.top().distance << " " << prioQueue.top().id << "\n";
         prioQueue.pop();
     }
 
-    prioQueue.emplace(Slot{ 3, 'C'});
-    prioQueue.emplace(Slot{ 1, 'A'});
-    prioQueue.emplace(Slot{ 2, 'B'});
+    prioQueue.emplace(Slot{3, 'C'});
+    prioQueue.emplace(Slot{1, 'A'});
+    prioQueue.emplace(Slot{2, 'B'});
 
-    while(!prioQueue.empty())
+    while (!prioQueue.empty())
     {
-        cout<<prioQueue.top().distance<<" "<<prioQueue.top().id <<"\n";
+        cout << prioQueue.top().distance << " " << prioQueue.top().id << "\n";
         prioQueue.pop();
     }
     std::cin.get();
