@@ -39,7 +39,7 @@ int main()
         Entity *mango = new Entity("Mango");
         Entity *mangoRef = mango;
         delete mango;
-        // usage of appleRef can lead to undefined behaviour
+        // usage of mangoRef can lead to undefined behaviour
 
         std::cout << "\n\n";
         // instead for the refernce use weak pointer

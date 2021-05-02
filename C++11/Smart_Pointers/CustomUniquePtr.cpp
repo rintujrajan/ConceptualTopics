@@ -8,6 +8,16 @@ class UniquePtr
 private:
     T *mPtr;
 
+    // support methods
+    void __cleanUp__()
+    {
+        if (mPtr != nullptr)
+        {
+            delete mPtr;
+            mPtr = nullptr;
+        }
+    }
+
 public:
     // copy constructor and assignment are deleted
     UniquePtr(const UniquePtr<T> &) = delete;
@@ -55,23 +65,13 @@ public:
     {
         return mPtr;
     }
-
     // destructor
     ~UniquePtr()
     {
         __cleanUp__();
     }
-
-    // support methods
-    void __cleanUp__()
-    {
-        if (mPtr != nullptr)
-        {
-            delete mPtr;
-            mPtr = nullptr;
-        }
-    }
 };
+
 class Entity
 {
 private:
@@ -79,27 +79,24 @@ private:
     int *valPtr;
 
 public:
-    void setValue(const int &valParam, int *valPtrParam)
+    Entity() = default;
+    Entity(const int &valParam, int *valPtrParam)
     {
         val = valParam;
         valPtr = valPtrParam;
     }
-    int getValue() { return val; }
-    int *getValuePtr() { return valPtr; }
     void printValues(UniquePtr<Entity> *wrapperUnqPtr)
     {
         std::cout << "This  Addr:" << this
                   << "\tWrapperUnqPtr Addr" << wrapperUnqPtr
-                  << "\tval : " << (*wrapperUnqPtr).get()->getValue()
-                  << "\t\tvalptr : " << (*wrapperUnqPtr).get()->getValuePtr() << "\n";
+                  << "\tval : " << (*wrapperUnqPtr).get()->val
+                  << "\t\tvalptr : " << (*wrapperUnqPtr).get()->valPtr << "\n";
     }
 };
 int main()
 {
-
-    UniquePtr<Entity> unqPtr(new Entity);
     int valueForPtr = 10;
-    unqPtr.get()->setValue(5, &valueForPtr);
+    UniquePtr<Entity> unqPtr(new Entity(5, &valueForPtr));
     unqPtr.get()->printValues(&unqPtr);
 
     UniquePtr<Entity> movedUnqPtr(std::move(unqPtr));
