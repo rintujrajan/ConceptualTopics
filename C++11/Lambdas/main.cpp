@@ -1,6 +1,21 @@
 #include <iostream>
 #include <algorithm>
 
+class Entity
+{
+    int counter;
+
+public:
+    Entity() : counter(0){};
+    void increment()
+    {
+        [obj = *this]() mutable {
+            obj.counter++;
+        }();
+    }
+    void printCounterVal() { std::cout << "counter : " << counter << "\n"; }
+};
+
 int main()
 {
     //*****************************************************************************************************************************************************
@@ -47,7 +62,10 @@ int main()
     std::cout << "\n****************************************************************\n";
 
     //*****************************************************************************************************************************************************
-
+    Entity entityInst;
+    entityInst.increment();
+    entityInst.increment();
+    entityInst.printCounterVal();
     std::cin.get();
     return 0;
 }

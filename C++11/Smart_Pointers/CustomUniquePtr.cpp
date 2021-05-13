@@ -1,12 +1,17 @@
 #include <iostream>
 
 using namespace std;
-
 template <typename T>
+void CustomDeleter(const T *ptr)
+{
+    delete ptr;
+}
+template <typename T, typename TD = decltype(&CustomDeleter<T>)>
 class UniquePtr
 {
 private:
     T *mPtr;
+    TD customDeleter;
 
     // support methods
     void __cleanUp__()
@@ -14,7 +19,8 @@ private:
         if (mPtr != nullptr)
         {
             delete mPtr;
-            mPtr = nullptr;
+            // mPtr = nullptr;
+            customDeleter(mPtr);
         }
     }
 
@@ -26,6 +32,7 @@ public:
     // constructors
     UniquePtr() : mPtr(nullptr){};
     UniquePtr(T *requestedPtr) : mPtr(requestedPtr) {}
+    UniquePtr(T *requestedPtr, TD providedDeleter) : mPtr(requestedPtr), customDeleter(providedDeleter) {}
 
     // move constructor
     UniquePtr(UniquePtr<T> &&movPtr)

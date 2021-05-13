@@ -1,39 +1,26 @@
 #include <iostream>
-#include <mutex>
+#include <atomic>
 
 template <typename T>
 class SharedPtr
 {
 private:
     T *mPtr;
-    int *refCount;
-    static std::mutex mut;
+    std::atomic<int *> refCount;
 
 public:
-    SharedPtr() : mPtr(nullptr)
-    {
-        std::lock_guard<std::mutex> lg(mut);
-        refCount = new int(0);
-    };
-    SharedPtr(T *ptrToShare) : mPtr(ptrToShare)
-    {
-        {
-            std::lock_guard<std::mutex> lg(mut);
-            refCount = new int(1);
-        }
-    }
+    SharedPtr() : mPtr(nullptr), refCount{new int(0)} {}
+    SharedPtr(T *ptrToShare) : mPtr(ptrToShare), refCount{new int(1)} {}
+
     SharedPtr(const SharedPtr<T> &copyShrdPtr)
     {
         mPtr = nullptr;
-        refCount = nullptr;
+        refCount.store(nullptr);
         if (copyShrdPtr.mPtr)
         {
             mPtr = copyShrdPtr.mPtr;
-            refCount = copyShrdPtr.refCount;
-            {
-                std::lock_guard<std::mutex> lg(mut);
-                (*refCount)++;
-            }
+            refCount = copyShrdPtr.refCount.load(); //assignment would not work
+            (*refCount)++;
         }
     }
     SharedPtr &operator=(const SharedPtr<T> &copyShrdPtr)
@@ -41,11 +28,8 @@ public:
         if (copyShrdPtr.mPtr)
         {
             mPtr = copyShrdPtr.mPtr;
-            refCount = copyShrdPtr.refCount;
-            {
-                std::lock_guard<std::mutex> lg(mut);
-                (*refCount)++;
-            }
+            refCount = copyShrdPtr.refCount.load();
+            (*refCount)++;
         }
         return *this;
     }
@@ -54,7 +38,7 @@ public:
         if (movShrdPtr.mPtr)
         {
             mPtr = movShrdPtr.mPtr;
-            refCount = movShrdPtr.refCount;
+            refCount = movShrdPtr.refCount.load();
             movShrdPtr.mPtr = nullptr;
             movShrdPtr.refCount = nullptr;
         }
@@ -64,7 +48,7 @@ public:
         if (mPtr != nullptr)
             delete mPtr;
         mPtr = movShrdPtr.mPtr;
-        refCount = movShrdPtr.refCount;
+        refCount = movShrdPtr.refCount.load();
         movShrdPtr.mPtr = nullptr;
         movShrdPtr.refCount = nullptr;
         return *this;
@@ -106,7 +90,6 @@ public:
         {
             if (refCount != nullptr)
             {
-                std::lock_guard<std::mutex> lg(mut);
                 (*refCount)--;
             }
             if (*refCount == 0)
@@ -120,8 +103,6 @@ public:
         }
     }
 };
-template <typename T>
-std::mutex SharedPtr<T>::mut;
 
 template <typename T>
 class WeakPtr
@@ -200,7 +181,6 @@ int main()
     }
     sharedMovPtr2.get()->printValues(sharedMovPtr2);
     sharedMovPtr2.reset();
-    sharedMovPtr2.get()->printValues(sharedMovPtr2);
     if (auto sharedPtrCreated = weakPtr.lock())
     {
         sharedPtrCreated.get()->printValues(sharedPtrCreated);
