@@ -17,7 +17,7 @@ struct Entity
     */
     bool operator<(const Entity &entity) const
     {
-        return id > entity.id;
+        return id < entity.id;
     }
 
     /* 
@@ -34,7 +34,14 @@ struct Entity
     {
         return id == entity.id;
     }
+
+    friend std::ostream &operator<<(std::ostream &out, const Entity &entity);
 };
+std::ostream &operator<<(std::ostream &out, const Entity &entity)
+{
+    out << "(" << entity.id << "," << entity.name << ")";
+    return out;
+}
 
 // for unordered_set/unordered_map - hash function specialization - option 1
 namespace std
@@ -63,4 +70,15 @@ struct HashFunctionFunctor
 size_t HashFunction(const Entity &entity)
 {
     return entity.id;
+}
+
+template <typename Container>
+void printContainerValues(const Container &container, const std::string &msg)
+{
+    std::cout << "*************** " << msg << " ***************\n";
+    for (auto &&item : container)
+    {
+        std::cout << item << " ";
+    }
+    std::cout << "\n\n\n";
 }
