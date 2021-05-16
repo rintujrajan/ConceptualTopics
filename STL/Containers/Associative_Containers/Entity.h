@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include <iostream>
 
 struct Entity
 {
@@ -15,6 +15,7 @@ struct Entity
     So, in order to store a structure in a set, some comparison function needs to be designed as the one below
 
     */
+    // for set/map option - 1 lt comparator
     bool operator<(const Entity &entity) const
     {
         return id < entity.id;
@@ -42,6 +43,14 @@ std::ostream &operator<<(std::ostream &out, const Entity &entity)
     out << "(" << entity.id << "," << entity.name << ")";
     return out;
 }
+// for set/map option - 2 comparator functor. 3rd option shall be function used with decltype
+struct Comp
+{
+    bool operator()(const Entity &entityLHS, const Entity &entityRHS) const
+    {
+        return entityLHS.id < entityRHS.id;
+    }
+};
 
 // for unordered_set/unordered_map - hash function specialization - option 1
 namespace std
