@@ -9,33 +9,15 @@ struct Tuple
     char value;
 };
 
-void printVector(const vector<Tuple> &tuples)
+template <typename T>
+void printVector(const T &tuples)
 {
-    cout<<"\nCurrent tuples:"<<endl;
+    cout << "\nCurrent tuples:" << endl;
     for (const auto &tuple : tuples)
     {
-        cout<<tuple.key<<"\t"<<tuple.value<<endl;
+        cout << tuple.key << "\t" << tuple.value << endl;
     }
 }
-
-// FIND IF START
-bool findIfTuple(const Tuple &t)
-{
-    return t.key==12;
-}
-void usingFindIf(const vector<Tuple> &tuples)
-{
-    //using Lambda expression
-    auto keyToLookUp = 6;
-    auto pair = find_if(tuples.begin(),tuples.end(),
-    [keyToLookUp](const Tuple &t){ return t.key==keyToLookUp;});
-    cout<<"Key '"<<keyToLookUp<<"' has value '"<<pair->value<<"'"<<endl;
-
-    //using function predicate
-    auto pair2 = find_if(tuples.begin(),tuples.end(),findIfTuple);
-    cout<<"Key '12' has value '"<<pair2->value<<"'"<<endl;
-}
-//FIND IF END
 
 int main()
 {
@@ -43,15 +25,25 @@ int main()
     auto temp = 'a';
     for (int i = 1; i <= 15; i++)
     {
-         tuples.emplace_back(Tuple{i,temp++});
+        tuples.emplace_back(Tuple{i, temp++});
     }
     printVector(tuples);
-    
-    // find_if is used whenever we need to have a conditional predicate
-    // OR 
-    // in our case to work on non primitive data types like a struct
-    usingFindIf(tuples);
 
+    std::cout << "Multiply even position key by 10 and capitalize odd position values..\n";
+    std::for_each(tuples.begin(), tuples.end(),
+                  [count = 1](Tuple &tuple) mutable
+                  {
+                      if (count % 2 == 0)
+                      {
+                          tuple.key *= 10;
+                      }
+                      else
+                      {
+                          tuple.value -= 32;
+                      }
+                      count++;
+                  });
+    printVector(tuples);
     cin.get();
     return 0;
 }
