@@ -30,6 +30,15 @@ int main()
     printVector(tuples);
 
     std::cout << "Multiply even position key by 10 and capitalize odd position values..\n";
+    /*
+    
+    necessary to pass paramater as refernce, since the values are modified in place(no values are returned)
+        
+    for_each vs transform:
+    1. for_each can modify the iterated element in place, while transform returns the modified element and is overwritten in the sequence in the position specified
+    2. since for_each modifies in place, it cannot change the container which is being iterated on to change its size. transform can do that
+
+    */
     std::for_each(tuples.begin(), tuples.end(),
                   [count = 1](Tuple &tuple) mutable
                   {
