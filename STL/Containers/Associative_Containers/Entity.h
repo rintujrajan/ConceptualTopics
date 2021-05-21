@@ -33,7 +33,7 @@ struct Entity
     */
     bool operator==(const Entity &entity) const
     {
-        return id == entity.id;
+        return (id == entity.id) && (name == entity.name);
     }
 
     friend std::ostream &operator<<(std::ostream &out, const Entity &entity);
@@ -60,7 +60,8 @@ namespace std
     {
         std::size_t operator()(const Entity &entity) const noexcept
         {
-            return entity.id; //can be made complex, as a combination of the members
+            //Creating a new hash function by combining existing hash functions using exclusive or (ˆ) is simple and often very effective(B. Stroustrup)
+            return std::hash<int>()(entity.id) ^ std::hash<std::string>()(entity.name);
         }
     };
 }
@@ -68,17 +69,18 @@ namespace std
 // for unordered_set/unordered_map - struct for hash function - option 2
 struct HashFunctionFunctor
 {
-    // id is returned as hash function
     size_t operator()(const Entity &entity) const
     {
-        return entity.id;
+        //Creating a new hash function by combining existing hash functions using exclusive or (ˆ) is simple and often very effective(B. Stroustrup)
+        return std::hash<int>()(entity.id) ^ std::hash<std::string>()(entity.name);
     }
 };
 
 // for unordered_set/unordered_map. Optional to the Functor above - option 3
 size_t HashFunction(const Entity &entity)
 {
-    return entity.id;
+    //Creating a new hash function by combining existing hash functions using exclusive or (ˆ) is simple and often very effective(B. Stroustrup)
+    return std::hash<int>()(entity.id) ^ std::hash<std::string>()(entity.name);
 }
 
 template <typename Container>
